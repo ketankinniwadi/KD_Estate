@@ -1,0 +1,63 @@
+package com.blogs.service;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.blogs.dao.PropertyDao;
+import com.blogs.pojos.Property;
+
+@Service
+@Transactional
+public class PropertyService {
+
+    @Autowired
+    private PropertyDao dao;
+
+    /** Add a new property */
+    public String addProperty(Property newProp) {
+        dao.save(newProp);
+        return "Property created successfully with ID: " + newProp.getPropertyId();
+    }
+
+    /** Get all properties */
+    public List<Property> getAllProperties() {
+        return dao.findAll();
+    }
+
+    /** Get a property by ID */
+    public Property getPropertyById(Long propertyId) {
+        return dao.findById(propertyId).orElse(null);
+    }
+
+    /** Update an existing property (replace entire object) */
+    public String updateProperty(Long propertyId, Property updatedProperty) {
+        return dao.findById(propertyId).map(existingProperty -> {
+            updatedProperty.setPropertyId(propertyId); // Keep the same ID
+            dao.save(updatedProperty);
+            return "Property updated successfully with ID: " + propertyId;
+        }).orElse("Property not found with ID: " + propertyId);
+    }
+
+    
+    public String updateImageUrl(Long propertyId, String imageUrl) {
+        Property property = dao.findById(propertyId).orElse(null);
+        if (property == null) {
+            return "Property not found with ID: " + propertyId;
+        }
+        property.setImagepath(imageUrl);
+        dao.save(property); // Save the property with the new image URL
+        return "Image URL updated successfully for property ID: " + propertyId;
+    }
+    /** Delete a property by ID */
+    public String deleteProperty(Long propertyId) {
+        if (dao.existsById(propertyId)) {
+            dao.deleteById(propertyId);
+            return "Property deleted successfully with ID: " + propertyId;
+        }
+        return "Property not found with ID: " + propertyId;
+    }
+}

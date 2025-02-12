@@ -1,0 +1,115 @@
+package com.blogs.controller;
+
+import com.blogs.pojos.Property;
+import com.blogs.pojos.User;
+import com.blogs.service.PropertyService;
+import com.blogs.service.UserService; // Import UserService
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import jakarta.validation.Valid;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.*;
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/properties")
+public class PropertyController {
+
+    private final PropertyService propertyService;
+    private final UserService userService;  // Injecting UserService
+
+    @Value("${upload.path}")
+    private String uploadDir;
+
+    public PropertyController(PropertyService propertyService, UserService userService) {
+        this.propertyService = propertyService;
+        this.userService = userService;  // Initializing UserService
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Property>> getAllProperties() {
+        return ResponseEntity.ok(propertyService.getAllProperties());
+    }
+
+    @PostMapping
+    public ResponseEntity<String> createProperty(@Valid @RequestBody Property property) {
+        // Fetch the owner (User) from the database before assigning it to the property
+        User existingOwner = userService.getUserById(property.getOwner().getId())
+                .orElse(null); // Fetch user safely
+
+        if (existingOwner == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Owner does not exist.");
+        }
+
+        property.setOwner(existingOwner); // Assigning the fetched owner
+        return ResponseEntity.status(HttpStatus.CREATED).body(propertyService.addProperty(property));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteProperty(@PathVariable Long id) {
+        propertyService.deleteProperty(id);
+        return ResponseEntity.ok("Property deleted successfully");
+    }
+
+    /** 
+     * Upload an image for a property and save its path 
+     */
+    @PostMapping("/{propertyId}/upload-image")
+    public ResponseEntity<String> uploadImage(@PathVariable Long propertyId, 
+                                              @RequestParam("file") MultipartFile file) {
+        Property property = propertyService.getPropertyById(propertyId);
+        if (property == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Property not found");
+        }
+
+        if (file.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("File is empty");
+        }
+
+        try {
+            // Get file extension
+            String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+            String extension = fileName.substring(fileName.lastIndexOf("."));
+
+            // Save file in uploads directory
+            String newFileName = "property_" + propertyId + extension;
+            Path filePath = Paths.get(uploadDir + File.separator + newFileName);
+            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+            // Save image path in database
+            property.setImagepath("/uploads/" + newFileName);
+            propertyService.updateImageUrl(propertyId, property.getImagepath());
+
+            return ResponseEntity.ok("File uploaded successfully: " + property.getImagepath());
+
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error uploading file");
+        }
+    }
+
+    /** 
+     * Update property geolocation (latitude & longitude) 
+     */
+    @PutMapping("/{propertyId}/set-location")
+    public ResponseEntity<String> setLocation(@PathVariable Long propertyId,
+                                              @RequestParam Double latitude,
+                                              @RequestParam Double longitude) {
+        Property property = propertyService.getPropertyById(propertyId);
+        if (property == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Property not found");
+        }
+
+        property.setLatitude(latitude);
+        property.setLongitude(longitude);
+        propertyService.updateProperty(propertyId, property);
+
+        return ResponseEntity.ok("Location updated successfully");
+    }
+}

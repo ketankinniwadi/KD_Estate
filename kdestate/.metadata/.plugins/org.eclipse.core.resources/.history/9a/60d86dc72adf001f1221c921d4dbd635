@@ -1,0 +1,7 @@
+package com.books.dao;
+
+public interface EstateService extends jp{
+	
+	
+
+}

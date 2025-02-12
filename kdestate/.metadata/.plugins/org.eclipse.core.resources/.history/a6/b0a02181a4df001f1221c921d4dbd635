@@ -1,0 +1,35 @@
+package com.books.service;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.blogs.dao.PropertyDao;
+import com.books.pojos.Property;
+
+import jakarta.transaction.Transactional;
+@Service
+@Transactional
+public class serviceimpl {
+@Autowired
+	PropertyDao dao ;
+public String addProperty(Property newprop) {
+	Property savedproperty = dao.save(newprop);
+	return "new property added : " + savedproperty;
+	
+}
+public List<Property> getAllProperties(){
+	
+
+	return dao.findAll();
+	
+}
+	
+public String DeleteProperty(Long Propertyid) {
+	if(dao.existsById(Propertyid)) {
+		dao.deleteById(Propertyid);
+		return "Book deleted by id : "+Propertyid;
+	}
+	return null;}
+}

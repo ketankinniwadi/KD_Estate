@@ -1,0 +1,34 @@
+package com.books.pojos;
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.Set;
+
+@Entity
+@Table(name = "tier")
+@Getter
+@Setter
+public class Tier {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "tier_id")
+    private Long tierId;
+
+    @NotBlank(message = "Tier name is required")
+    @Column(name = "tier_name", nullable = false)
+    private String tierName;
+
+    @Min(value = 1, message = "Priority level must be between 1 and 5")
+    @Max(value = 5, message = "Priority level must be between 1 and 5")
+    @Column(name = "priority_level", nullable = false)
+    private Integer priorityLevel;
+
+    @ManyToMany(mappedBy = "tiers")
+    private Set<Property> properties;
+}

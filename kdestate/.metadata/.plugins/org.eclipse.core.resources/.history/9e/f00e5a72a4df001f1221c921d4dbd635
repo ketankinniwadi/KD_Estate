@@ -1,0 +1,11 @@
+package com.books.dao;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.books.pojos.Property;
+
+public interface PropertyDao extends JpaRepository<Property, Long>{
+	
+	
+
+}

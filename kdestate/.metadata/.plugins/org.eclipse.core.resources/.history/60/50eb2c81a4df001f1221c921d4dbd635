@@ -1,0 +1,47 @@
+package com.books.pojos;
+
+
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.Set;
+
+@Entity
+@Table(name = "users")
+@Getter
+@Setter
+public class User {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
+    private Long userId;
+
+    @NotBlank(message = "Name is required")
+    private String name;
+
+    @Email(message = "Email should be valid")
+    @NotBlank(message = "Email is required")
+    @Column(unique = true, nullable = false)
+    private String email;
+
+    @NotBlank(message = "Password is required")
+    private String password;
+
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
+    private Set<Property> properties;
+
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    private Set<Inquiry> inquiries;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private Set<Payment> payments;
+
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
+    private Set<Listing> listings;
+}
+

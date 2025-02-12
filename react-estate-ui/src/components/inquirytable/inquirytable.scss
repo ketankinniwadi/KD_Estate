@@ -1,0 +1,38 @@
+.inquiry-tables {
+    width: 100%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 30px;
+  }
+  
+  .property-inquiry {
+    margin-bottom: 30px;
+  }
+  
+  h2 {
+    color: #333;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+  }
+  
+  th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  th {
+    background-color: #f4f4f4;
+  }
+  
+  p {
+    color: gray;
+    font-style: italic;
+  }
+  

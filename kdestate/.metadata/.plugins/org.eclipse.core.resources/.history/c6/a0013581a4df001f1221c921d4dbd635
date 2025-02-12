@@ -1,0 +1,13 @@
+package com.books.pojos;
+
+
+import jakarta.persistence.Embeddable;
+import lombok.EqualsAndHashCode;
+import java.io.Serializable;
+
+@Embeddable
+@EqualsAndHashCode
+public class PropertyTierId implements Serializable {
+    private Long propertyId;
+    private Long tierId;
+}

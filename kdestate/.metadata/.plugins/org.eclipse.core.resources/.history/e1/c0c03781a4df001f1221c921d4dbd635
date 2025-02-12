@@ -1,0 +1,26 @@
+package com.books.pojos;
+
+
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
+@Entity
+@Table(name = "property_tier")
+@Getter
+@Setter
+public class PropertyTier {
+
+    @EmbeddedId
+    private PropertyTierId id;
+
+    @ManyToOne
+    @MapsId("propertyId")
+    @JoinColumn(name = "property_id")
+    private Property property;
+
+    @ManyToOne
+    @MapsId("tierId")
+    @JoinColumn(name = "tier_id")
+    private Tier tier;
+}

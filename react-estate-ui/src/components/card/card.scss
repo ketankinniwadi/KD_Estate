@@ -1,0 +1,85 @@
+.card{
+    display: flex;
+    gap: 20px;
+    .imagecontainer{
+        flex: 2;
+        height: 200px;
+        img{
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+    }
+    .textcontainer{
+        flex: 3;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 10px;
+        img{
+            width: 16px;
+            height: 16px;
+        }
+        .title{
+            font-size: 20px;
+            font-weight: 200;
+            color: #444;
+            transition: 0.4s;
+            &:hover{
+                scale: 1.01;
+                color: black;
+            }
+        }
+        .address{
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #888;
+        }
+        .price{
+            font-size: 20px;
+            font-weight: 300;
+            padding: 5px;
+            border-radius: 5px;
+            background-color: #fce9ba;
+            width: max-content;
+        }
+        .bottom{
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+
+            .features{
+                display: flex;
+                gap: 20px;
+                font-size: 12px;
+                .feature{
+                    display: flex;
+                    align-items: center;
+                    gap: 5px;
+                    background-color: whitesmoke;
+                }
+
+            }
+            .icons{
+                display: flex;
+                gap: 20px;
+                .icon{
+                    border: 1px solid #999;
+                    padding: 2px 5px;
+                    border-radius: 5px;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    &:hover{
+                        background-color: lightgray;
+                    }
+
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,53 @@
+package com.blogs.controller;
+
+import java.util.List;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.books.service.serviceimpl;
+import com.books.pojos.Property;
+
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/properties")
+public class PropertyController {
+
+    private final serviceimpl propertyService;
+
+    public PropertyController(serviceimpl propertyService) {
+        this.propertyService = propertyService;
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Property>> getAllProperties() {
+        return ResponseEntity.ok(propertyService.getAllProperties());
+    }
+
+//    @GetMapping("/{id}")
+//    public ResponseEntity<Property> getPropertyById(@PathVariable Long id) {
+//        return ResponseEntity.ok(propertyService.getPropertyById(id));
+//    }
+
+    @PostMapping
+    public ResponseEntity<Property> createProperty(@Valid @RequestBody Property property) {
+        return ResponseEntity.ok(propertyService.createProperty(property));
+    }
+
+//    @PutMapping("/{id}")
+//    public ResponseEntity<Property> updateProperty(@PathVariable Long id, @Valid @RequestBody Property property) {
+//        return ResponseEntity.ok(propertyService.updateProperty(id, property));
+//    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteProperty(@PathVariable Long id) {
+        propertyService.DeleteProperty(id);
+        return ResponseEntity.ok("Property deleted successfully");
+    }
+}
+

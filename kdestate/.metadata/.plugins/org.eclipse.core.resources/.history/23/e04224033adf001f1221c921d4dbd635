@@ -1,0 +1,5 @@
+package com.books.Exception;
+
+public class CustomException {
+
+}
